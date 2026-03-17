@@ -1,0 +1,91 @@
+@import "tailwindcss";
+@plugin "./hero.ts";
+@source "../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Custom fonts */
+:root {
+	--font-display: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+body {
+	font-family: var(--font-display);
+	background-color: #fff0f3;
+	min-height: 100vh;
+	transition: background-color 0.3s ease;
+}
+
+/* Dark mode body background */
+:is(.dark) body {
+	background-color: #0f172a;
+}
+
+/* Bear background overlay — applied to a fixed div in App */
+.bear-bg {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	opacity: 0.12;
+	background-image:
+		url("/bears/bear_1_top_left.png"),
+		url("/bears/bear_2_top_right.png"),
+		url("/bears/bear_3_bottom_left.png"),
+		url("/bears/bear_4_bottom_right.png");
+	background-size: 220px, 200px, 240px, 210px;
+	background-position:
+		3% 5%,
+		95% 3%,
+		5% 90%,
+		93% 88%;
+	background-repeat: no-repeat;
+	transition: opacity 0.3s ease;
+}
+
+/* Dim bears in dark mode */
+:is(.dark) .bear-bg {
+	opacity: 0.06;
+}
+
+/* Custom scrollbar for a cleaner look */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: #cbd5e1;
+	border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: #94a3b8;
+}
+
+/* Glassmorphism utility */
+.glass {
+	background: rgba(255, 255, 255, 0.7);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* helper to hide native scrollbar for horizontal chip lists when desired */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* Popcorn text — white fill with black outline */
+.popcorn-text {
+	color: white;
+	-webkit-text-stroke: 1.5px black;
+	paint-order: stroke fill;
+	text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;
+}
+
+/* Carrots text — white outline in dark mode */
+:is(.dark) .carrots-text {
+	-webkit-text-stroke: 1.5px white;
+	paint-order: stroke fill;
+	text-shadow: 1px 1px 0 white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white;
+}

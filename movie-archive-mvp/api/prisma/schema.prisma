@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Status {
+  WANT
+  WATCHED
+}
+
+model User {
+  id        Int          @id @default(autoincrement())
+  email     String       @unique
+  name      String
+  createdAt DateTime     @default(now())
+  entries   MovieEntry[]
+}
+
+model Movie {
+  id          Int          @id @default(autoincrement())
+  title       String
+  year        Int?
+  endYear     Int?
+  posterUrl   String?
+  imdbId      String?
+  genres      String[]     @default([])
+  plot        String?
+  runtime     Int?
+  mediaType   String       @default("movie")
+  imdbRating  Float?
+  createdAt   DateTime     @default(now())
+  entries     MovieEntry[]
+  @@index([title])
+}
+
+model MovieEntry {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  movieId   Int
+  status    Status   @default(WANT)
+  rating    Int?
+  notes     String?
+  watchedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
+}
+

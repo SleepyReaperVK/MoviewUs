@@ -13,7 +13,30 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 const app = express();
 
-app.use(cors());
+function getCorsOptions() {
+  const rawOrigins = process.env.CORS_ORIGIN;
+  if (!rawOrigins) return undefined;
+
+  const origins = rawOrigins
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  if (!origins.length) return undefined;
+
+  return {
+    origin: origins,
+  };
+}
+
+function shouldSeedDemoUsers() {
+  if (process.env.ENABLE_DEMO_USERS) {
+    return process.env.ENABLE_DEMO_USERS === "true";
+  }
+  return process.env.NODE_ENV !== "production";
+}
+
+app.use(cors(getCorsOptions()));
 app.use(express.json());
 
 async function ensureDemoUsers() {
@@ -148,8 +171,15 @@ app.delete("/api/movies/:id", async (req, res) => {
 
 const PORT = process.env.PORT || 4000;
 
-ensureDemoUsers()
-  .then(() => app.listen(PORT, () => console.log(`API http://localhost:${PORT}`)))
+const bootstrap = async () => {
+  if (shouldSeedDemoUsers()) {
+    await ensureDemoUsers();
+  }
+
+  app.listen(PORT, () => console.log(`API http://localhost:${PORT}`));
+};
+
+bootstrap()
   .catch((e) => {
     console.error(e);
     process.exit(1);

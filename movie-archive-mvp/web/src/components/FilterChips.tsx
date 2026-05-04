@@ -41,6 +41,7 @@ export default function FilterChips({ genres, activeGenre, onGenreChange }: Filt
       {/* "All" chip */}
       <button
         onClick={() => onGenreChange(null)}
+        aria-pressed={activeGenre === null}
         className={activeGenre === null ? chipActive : chipInactive}
       >
         <span className="material-symbols-outlined text-[18px]">apps</span>
@@ -52,6 +53,7 @@ export default function FilterChips({ genres, activeGenre, onGenreChange }: Filt
         <button
           key={g}
           onClick={() => onGenreChange(activeGenre === g ? null : g)}
+          aria-pressed={activeGenre === g}
           className={activeGenre === g ? chipActive : chipInactive}
         >
           {g}
@@ -63,6 +65,8 @@ export default function FilterChips({ genres, activeGenre, onGenreChange }: Filt
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setShowMore((prev) => !prev)}
+            aria-pressed={activeInOverflow}
+            aria-expanded={showMore}
             className={`${activeInOverflow ? chipActive : chipInactive} gap-1`}
           >
             {activeInOverflow ? activeGenre : `+${overflowGenres.length} more`}
@@ -82,6 +86,7 @@ export default function FilterChips({ genres, activeGenre, onGenreChange }: Filt
                     onGenreChange(activeGenre === g ? null : g);
                     setShowMore(false);
                   }}
+                  aria-pressed={activeGenre === g}
                   className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
                     activeGenre === g
                       ? "bg-primary/10 text-primary font-semibold"

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchUsers, fetchMovies } from "../services/api";
+import { fetchUsers, fetchMovies, createUser, exportArchive, importArchive } from "../services/api";
+import type { ArchiveSnapshot } from "../services/api";
 import type { User, MovieRow } from "../types";
 
 /**
@@ -51,5 +52,30 @@ export function useMovies() {
     loadMovies(userId);
   }
 
-  return { users, userId, setUserId, movies, loading, refetch } as const;
+  /** Create a user and auto-select them. */
+  async function addUser(name: string, email: string): Promise<User> {
+    const user = await createUser(name, email);
+    const updated = await fetchUsers();
+    setUsers(updated);
+    setUserId(user.id);
+    return user;
+  }
+
+  /** Download the full archive JSON. */
+  async function handleExport() {
+    await exportArchive();
+  }
+
+  /** Import an archive snapshot then reload everything. */
+  async function handleImport(snapshot: ArchiveSnapshot) {
+    await importArchive(snapshot);
+    const updated = await fetchUsers();
+    setUsers(updated);
+    if (updated.length > 0) {
+      const next = updated.find((u) => u.id === userId) ?? updated[0];
+      setUserId(next.id);
+    }
+  }
+
+  return { users, userId, setUserId, movies, loading, refetch, addUser, handleExport, handleImport } as const;
 }

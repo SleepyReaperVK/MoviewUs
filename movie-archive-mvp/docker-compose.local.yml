@@ -1,0 +1,20 @@
+# Local development overrides — NOT for production
+# Usage: docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+services:
+  api:
+    ports:
+      - "4000:4000"
+    environment:
+      CORS_ORIGIN: "http://localhost:5173,http://localhost:3000,http://localhost"
+
+  web:
+    build:
+      args:
+        VITE_API_URL: http://localhost:4000/api
+    ports:
+      - "3000:80"
+
+  caddy:
+    # Disable caddy locally — access web and api directly via ports above
+    profiles:
+      - production

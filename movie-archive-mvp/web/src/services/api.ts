@@ -1,15 +1,65 @@
 import type { User, MovieRow, IMDBTitle, IMDBTitleDetail } from "../types";
 
+export type ArchiveSnapshot = {
+  exportedAt: string;
+  version: number;
+  users: object[];
+  movies: object[];
+  entries: object[];
+};
+
 const API_BASE =
   (import.meta.env.VITE_API_URL as string) || "http://localhost:4000/api";
 
 const IMDB_SEARCH_URL = "https://api.imdbapi.dev/search/titles";
 const IMDB_TITLE_URL = "https://api.imdbapi.dev/titles";
 
-/** Fetch all demo users. */
+/** Fetch all users. */
 export async function fetchUsers(): Promise<User[]> {
   const res = await fetch(`${API_BASE}/users`);
   if (!res.ok) throw new Error(`fetchUsers ${res.status}`);
+  return res.json();
+}
+
+/** Create a new user. Throws with message on conflict (409) or bad input. */
+export async function createUser(name: string, email: string): Promise<User> {
+  const res = await fetch(`${API_BASE}/users`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error ?? `createUser ${res.status}`);
+  }
+  return res.json();
+}
+
+/** Download the full archive as a JSON blob. */
+export async function exportArchive(): Promise<void> {
+  const res = await fetch(`${API_BASE}/export`);
+  if (!res.ok) throw new Error(`export ${res.status}`);
+  const blob = await res.blob();
+  const cd = res.headers.get("Content-Disposition") ?? "";
+  const nameMatch = cd.match(/filename="?([^"]+)"?/);
+  const filename = nameMatch?.[1] ?? "archive.json";
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/** Upload and apply an archive JSON file. */
+export async function importArchive(snapshot: ArchiveSnapshot): Promise<{ imported: { users: number; movies: number; entries: number } }> {
+  const res = await fetch(`${API_BASE}/import`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(snapshot),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error ?? `import ${res.status}`);
+  }
   return res.json();
 }
 

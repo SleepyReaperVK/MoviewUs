@@ -6,3 +6,4 @@ export { default as FilterChips } from "./FilterChips";
 export { default as LoadingSpinner } from "./LoadingSpinner";
 export { default as AddMovieModal } from "./AddMovieModal";
 export { default as MovieDetailModal } from "./MovieDetailModal";
+export { default as AlertModal } from "./AlertModal";

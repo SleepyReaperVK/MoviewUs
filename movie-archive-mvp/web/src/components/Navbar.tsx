@@ -43,7 +43,7 @@ export default function Navbar({
                 className="h-14 sm:h-16 w-auto drop-shadow-md relative top-[3vh]"
                 style={{ transform: "scale3d(2, 2, 2)" }}
               />
-              <h1 className="text-lg sm:text-xl font-bold tracking-tight leading-tight">
+              <h1 className="text-sm sm:text-xl font-bold tracking-tight leading-tight">
                 <span className="text-orange-500 carrots-text">Carrots</span>
                 <span className="text-black dark:text-black"> and </span>
                 <span className="popcorn-text">Popcorn</span>
@@ -52,7 +52,7 @@ export default function Navbar({
           </div>
 
           {/* Search & actions */}
-          <div className="flex items-center gap-4 sm:gap-6 flex-1 justify-end">
+          <div className="flex items-center gap-1 sm:gap-6 flex-1 justify-end">
 
             {/* Search — hidden on small screens */}
             <div className="hidden sm:flex max-w-md w-full relative group">
@@ -72,10 +72,10 @@ export default function Navbar({
             <button
               type="button"
               onClick={onAddClick}
-              className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-primary to-secondary rounded-2xl shadow-glow hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
+              className="flex items-center gap-1.5 px-[10px] sm:px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-primary to-secondary rounded-2xl shadow-glow hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap"
             >
               <span className="material-symbols-outlined text-[18px]">add</span>
-              Add
+              <span className="hidden sm:inline">Add</span>
             </button>
 
             {/* Dark mode toggle */}
@@ -210,6 +210,7 @@ export default function Navbar({
 
           </div>
         </div>
+
       </div>
     </nav>
   );

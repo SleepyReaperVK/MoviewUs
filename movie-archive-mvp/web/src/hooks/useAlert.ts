@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type AlertPayload = { title: string; text: string; time: number | null };
 
@@ -8,7 +8,7 @@ function deriveWsUrl(): string {
 }
 
 export function useAlert() {
-  const [pushAlert, setPushAlert] = useState<AlertPayload | null>(null);
+  const [notifications, setNotifications] = useState<AlertPayload[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -22,7 +22,9 @@ export function useAlert() {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data) as AlertPayload;
-          if (data.title && data.text) setPushAlert(data);
+          if (data.title && data.text) {
+            setNotifications((prev) => [...prev, { ...data }]);
+          }
         } catch { /* ignore malformed messages */ }
       };
 
@@ -41,5 +43,17 @@ export function useAlert() {
     };
   }, []);
 
-  return { pushAlert, dismissAlert: () => setPushAlert(null) };
+  const dismissNotification = useCallback((index: number) => {
+    setNotifications((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  // Latest notification surfaces as the modal alert
+  const pushAlert = notifications.length > 0 ? notifications[notifications.length - 1] : null;
+
+  // Dismiss the latest (used by AlertModal auto-dismiss and close button)
+  const dismissAlert = useCallback(() => {
+    setNotifications((prev) => (prev.length > 0 ? prev.slice(0, -1) : prev));
+  }, []);
+
+  return { notifications, pushAlert, dismissAlert, dismissNotification };
 }

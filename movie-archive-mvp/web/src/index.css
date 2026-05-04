@@ -90,17 +90,37 @@ body {
 	text-shadow: 1px 1px 0 white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white;
 }
 
-/* ─── Nav icon buttons — 44 × 44 min touch target ─── */
+/* ─── Nav icon buttons — 44 px min touch target height ─── */
 .nav-icon-btn {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 44px;
 	min-height: 44px;
+	flex-shrink: 0;
 	padding: 0.5rem;
 	border-radius: 9999px;
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Fixed bottom credit badge ─── */
+.made-with-love-badge {
+	position: fixed;
+	left: 50%;
+	bottom: 0;
+	transform: translateX(-50%);
+	z-index: 40;
+	padding: 6px 12px calc(6px + env(safe-area-inset-bottom));
+	font-size: 12px;
+	line-height: 1;
+	color: rgba(71, 85, 105, 0.9);
+	background: rgba(255, 255, 255, 0.75);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	border-top-left-radius: 12px;
+	border-top-right-radius: 12px;
+	pointer-events: none;
+	white-space: nowrap;
 }
 
 /* ─── Page typography helpers ─── */

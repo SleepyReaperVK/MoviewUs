@@ -1,6 +1,14 @@
 import { HomePage } from "./pages";
 import { useSunTheme } from "./hooks/useSunTheme";
 
+function MadeWithLoveBadge() {
+  return (
+    <div className="made-with-love-badge" aria-label="Made with love for here">
+      Made With ❤️ For Her
+    </div>
+  );
+}
+
 export default function App() {
   const { dark, toggle } = useSunTheme();
 
@@ -9,6 +17,7 @@ export default function App() {
       {/* Bear background overlay */}
       <div className="bear-bg" aria-hidden="true" />
       <HomePage dark={dark} onToggleDark={toggle} />
+      <MadeWithLoveBadge />
     </div>
   );
 }

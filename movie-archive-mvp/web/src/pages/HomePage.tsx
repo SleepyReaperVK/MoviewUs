@@ -120,7 +120,7 @@ function Header({ users, userId, onUserChange, onAddUser, genres, activeGenre, o
 
 export default function HomePage({ dark, onToggleDark }: { dark: boolean; onToggleDark: () => void }) {
   const { users, userId, setUserId, movies, loading, refetch, addUser, handleExport, handleImport } = useMovies();
-  const { pushAlert, dismissAlert } = useAlert();
+  const { notifications, pushAlert, dismissAlert, dismissNotification } = useAlert();
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeGenre, setActiveGenre] = useState<string | null>(null);
   const [detailMovie, setDetailMovie] = useState<MovieRow | null>(null);
@@ -224,6 +224,8 @@ export default function HomePage({ dark, onToggleDark }: { dark: boolean; onTogg
         onSearchChange={setSearchQuery}
         onExport={handleExport}
         onImport={triggerImport}
+        notifications={notifications}
+        onDismissNotification={dismissNotification}
       />
 
       <AddMovieModal
